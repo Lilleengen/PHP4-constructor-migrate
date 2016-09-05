@@ -4,6 +4,8 @@ use PhpParser\PrettyPrinter;
 
 require __DIR__ . '/vendor/autoload.php';
 
+ini_set('memory_limit', '-1');
+
 $prettyPrinter = new PrettyPrinter\Standard;
 $di = new RecursiveDirectoryIterator('.');
 
@@ -15,7 +17,7 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 		try {
 			$stmts = $parser->parse(file_get_contents($filename));
 		} catch (PhpParser\Error $e) {
-			echo 'Parse Error: ' . $e->getMessage() . '\n';
+			echo 'Parse Error: ' . $e->getMessage() . "\n";
 		}
 
 		$matches = 0;
@@ -50,7 +52,7 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 
 		if ($matches > 0) {
 			file_put_contents($filename, $prettyPrinter->prettyPrintFile($stmts));
-			echo "=== Updated " . $matches . " constructors in " . $filename . '.\n';
+			echo "=== Updated " . $matches . " constructors in " . $filename . ".\n";
 		}
 	}
 }
