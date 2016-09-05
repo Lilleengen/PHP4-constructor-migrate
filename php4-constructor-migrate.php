@@ -50,7 +50,7 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 
 		if ($matches > 0) {
 			file_put_contents($filename, $prettyPrinter->prettyPrintFile($stmts));
-			echo "=== Updated " . $matches . " constructors in " . $filename . ".\n";
+			echo "=== Updated " . $matches . " constructors in " . $filename . '.\n';
 		}
 	}
 }
