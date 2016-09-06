@@ -27,22 +27,22 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 
 		$matches = 0;
 		if (is_array($stmts)) {
+			$index = 0;
 			foreach ($stmts as $class) {
 				if($class instanceof PhpParser\Node\Stmt\Class_) {
 					$hasConstruct = false;
 					foreach ($class->stmts as $function) {
 						if($function instanceof PhpParser\Node\Stmt\ClassMethod) {
-							if ($class->name === '__construct') {
+							if ($function->name == '__construct') {
 								$hasConstruct = true;
 							}
-							//var_dump(json_encode($function)); die();
 						}
 					}
 					if(!$hasConstruct) {
 						foreach ($class->stmts as $index => $function) {
 							if($function instanceof PhpParser\Node\Stmt\ClassMethod) {
 								if (strtolower($class->name) === strtolower($function->name)) {
-									$newFunction = new ClassMethod('__construct');
+									$newFunction = new ClassMethod('__construct', array(), $function->getAttributes());
 									$newFunction->params = $function->params;
 
 									$args = array();
@@ -61,6 +61,7 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 						}
 					}
 				}
+				$index++;
 			}
 		}
 
