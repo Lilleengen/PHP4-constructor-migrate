@@ -1,6 +1,11 @@
 <?php
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr\Variable;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -30,16 +35,25 @@ foreach (new RecursiveIteratorIterator($di) as $filename => $file) {
 							if ($class->name === '__construct') {
 								$hasConstruct = true;
 							}
+							//var_dump(json_encode($function)); die();
 						}
 					}
 					if(!$hasConstruct) {
-						foreach ($class->stmts as $function) {
+						foreach ($class->stmts as $index => $function) {
 							if($function instanceof PhpParser\Node\Stmt\ClassMethod) {
 								if (strtolower($class->name) === strtolower($function->name)) {
-									$newFunction = clone $function;
-									$newFunction->name = '__construct';
+									$newFunction = new ClassMethod('__construct');
+									$newFunction->params = $function->params;
 
-									$class->stmts[] = $newFunction;
+									$args = array();
+
+									foreach ($function->params as $param) {
+										$args[] = $arg = new Arg(new Variable($param->name));
+									}
+
+									$newFunction->stmts[] = new StaticCall(new Name(array("self")), $function->name, $args);
+
+									array_splice($class->stmts, $index, 0, array($newFunction));
 
 									$matches++;
 								}
