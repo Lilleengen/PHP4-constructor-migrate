@@ -3,7 +3,7 @@ Script to migrate from PHP4 type constructor to PHP5+ type
 
 ### Warning
 * This is not a perfect tool, after running it you need to verify that everything works
-* This will change the formating of your script, and will make diffs show more than the new constructor
+* This will change the formating of your script, and will make diffs output more than the new constructor
 
 ### Getting started
 ```bash
